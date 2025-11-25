@@ -1,0 +1,203 @@
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Camera } from "lucide-react";
+
+// Single-file React component portfolio for a photographer
+// Tailwind CSS utility classes are used for styling (no imports needed here).
+// Usage: <PhotographerPortfolio images={imagesArray} />
+// imagesArray = [{src: 'https://...', alt: '...'}, ...]
+
+export default function PhotographerPortfolio({
+  images = defaultImages,
+  name = "Alexei Ivanov",
+  tagline = "Portraits • Weddings • Commercial",
+}) {
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+
+  const openLightbox = (i) => setLightboxIndex(i);
+  const closeLightbox = () => setLightboxIndex(null);
+  const next = () => setLightboxIndex((i) => (i + 1) % images.length);
+  const prev = () => setLightboxIndex((i) => (i - 1 + images.length) % images.length);
+
+  return (
+    <div className="min-h-screen bg-gray-50 text-slate-900 antialiased">
+      {/* Header / Nav */}
+      <header className="backdrop-blur-sm bg-white/60 sticky top-0 z-30 border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <a href="#hero" className="flex items-center gap-3">
+            <div className="p-2 bg-slate-900 rounded-md text-white">
+              <Camera size={18} />
+            </div>
+            <div>
+              <div className="font-semibold">{name}</div>
+              <div className="text-xs text-slate-600 -mt-0.5">{tagline}</div>
+            </div>
+          </a>
+
+          <nav className="hidden md:flex items-center gap-6 text-sm text-slate-700">
+            <a href="#portfolio" className="hover:text-slate-900">Портфолио</a>
+            <a href="#about" className="hover:text-slate-900">О себе</a>
+            <a href="#services" className="hover:text-slate-900">Услуги</a>
+            <a href="#contact" className="hover:text-slate-900">Контакты</a>
+          </nav>
+
+          <a href="#contact" className="hidden md:inline-block bg-slate-900 text-white text-sm px-4 py-2 rounded-lg shadow-sm hover:opacity-95">Заказать съемку</a>
+
+          {/* Mobile menu button (optional) */}
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section id="hero" className="max-w-6xl mx-auto px-6 py-16 md:py-28">
+        <div className="grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <motion.h1 initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="text-4xl md:text-5xl font-extrabold leading-tight">
+              {name}
+              <span className="block text-slate-500 text-xl font-medium mt-3">{tagline}</span>
+            </motion.h1>
+
+            <p className="mt-6 text-slate-700 max-w-xl">Я специализируюсь на создании искренних портретов и эмоций — от свадеб и коммерческих съемок до художественных серий. Моя задача — рассказать вашу историю через кадр.</p>
+
+            <div className="mt-8 flex gap-3">
+              <a href="#portfolio" className="inline-block px-5 py-3 bg-slate-900 text-white rounded-lg shadow-sm">Просмотреть портфолио</a>
+              <a href="#contact" className="inline-block px-5 py-3 border border-slate-200 rounded-lg">Связаться</a>
+            </div>
+
+            <div className="mt-8 text-xs text-slate-500">Доступен к бронированию в Москве, Санкт-Петербурге и по запросу.</div>
+          </div>
+
+          <div className="relative">
+            <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-xl">
+              <img src={images[0].src} alt={images[0].alt} className="w-full h-full object-cover" />
+            </div>
+            <div className="hidden md:block absolute -bottom-8 right-6 w-64 h-40 rounded-xl overflow-hidden shadow-lg">
+              <img src={images[1].src} alt={images[1].alt} className="w-full h-full object-cover" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Portfolio gallery */}
+      <section id="portfolio" className="max-w-6xl mx-auto px-6 py-10">
+        <h2 className="text-2xl font-bold">Портфолио</h2>
+        <p className="text-slate-600 mt-2">Ниже — подборка недавних работ. Нажмите на изображение, чтобы открыть просмотрщик.</p>
+
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          {images.map((img, i) => (
+            <motion.button whileHover={{ scale: 1.02 }} key={i} onClick={() => openLightbox(i)} className="group rounded-lg overflow-hidden cursor-zoom-in focus:outline-none">
+              <div className="aspect-square bg-slate-100">
+                <img src={img.src} alt={img.alt} className="w-full h-full object-cover transform group-hover:scale-105 transition" />
+              </div>
+            </motion.button>
+          ))}
+        </div>
+      </section>
+
+      {/* About + Services */}
+      <section id="about" className="max-w-6xl mx-auto px-6 py-12 bg-white border-t border-slate-100">
+        <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h3 className="text-2xl font-bold">О себе</h3>
+            <p className="mt-4 text-slate-700">Психолог и визуальный рассказчик: я верю, что лучшие кадры рождаются в доверии между фотографом и моделью. Работаю как в студии, так и на выезде. В моем арсенале — естественный свет, драматичные портреты и внимательное отношение к деталям.</p>
+
+            <ul className="mt-4 grid gap-2 text-slate-700">
+              <li>• 8+ лет профессионального опыта</li>
+              <li>• Свадебная и коммерческая съемка</li>
+              <li>• Ретушь и цветокоррекция высокого уровня</li>
+            </ul>
+
+            <a href="#contact" className="mt-6 inline-block px-4 py-2 bg-slate-900 text-white rounded-lg">Записаться на съемку</a>
+          </div>
+
+          <div>
+            <h4 className="text-lg font-semibold">Услуги</h4>
+            <div className="mt-4 grid gap-4">
+              <div className="p-4 border rounded-lg">
+                <div className="font-semibold">Портреты</div>
+                <div className="text-sm text-slate-600 mt-1">Персональные сессии — студийные или на локации.</div>
+              </div>
+              <div className="p-4 border rounded-lg">
+                <div className="font-semibold">Свадебная съемка</div>
+                <div className="text-sm text-slate-600 mt-1">Полный день / частичные пакеты, фотокнига по желанию.</div>
+              </div>
+              <div className="p-4 border rounded-lg">
+                <div className="font-semibold">Коммерческая съемка</div>
+                <div className="text-sm text-slate-600 mt-1">Рекламные проекты, образ для каталога, визуал бренда.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact */}
+      <section id="contact" className="max-w-6xl mx-auto px-6 py-12">
+        <div className="grid md:grid-cols-2 gap-8 items-start">
+          <div>
+            <h3 className="text-2xl font-bold">Контакты</h3>
+            <p className="mt-3 text-slate-700">Оставьте заявку — я отвечу в течение 1–2 рабочих дней. Для срочных вопросов укажите это в сообщении.</p>
+
+            <div className="mt-6 space-y-3 text-slate-700">
+              <div>📍 Москва</div>
+              <div>✉️ <a href="mailto:hello@example.com" className="underline">hello@example.com</a></div>
+              <div>📞 +7 (999) 123-45-67</div>
+            </div>
+          </div>
+
+          <form onSubmit={(e) => { e.preventDefault(); alert('Форма отправлена (псевдо) — подключите backend или сервис писем.'); }} className="bg-white p-6 rounded-lg shadow">
+            <label className="block">
+              <span className="text-sm text-slate-700">Имя</span>
+              <input required className="mt-1 block w-full rounded-md border px-3 py-2" />
+            </label>
+            <label className="block mt-3">
+              <span className="text-sm text-slate-700">Email</span>
+              <input type="email" required className="mt-1 block w-full rounded-md border px-3 py-2" />
+            </label>
+            <label className="block mt-3">
+              <span className="text-sm text-slate-700">Сообщение</span>
+              <textarea required className="mt-1 block w-full rounded-md border px-3 py-2" rows={4} />
+            </label>
+
+            <div className="mt-4 flex justify-end">
+              <button type="submit" className="px-4 py-2 rounded-lg bg-slate-900 text-white">Отправить</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-100 mt-12">
+        <div className="max-w-6xl mx-auto px-6 py-8 text-sm text-slate-600 flex flex-col md:flex-row justify-between items-center">
+          <div>© {new Date().getFullYear()} {name}. Все права защищены.</div>
+          <div className="mt-3 md:mt-0">Designed with ❤️ — customizable single-file React + Tailwind</div>
+        </div>
+      </footer>
+
+      {/* Lightbox modal */}
+      {lightboxIndex !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="max-w-4xl w-full relative">
+            <button onClick={closeLightbox} className="absolute top-3 right-3 text-white text-lg bg-black/30 rounded-full px-3 py-1">✕</button>
+            <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 text-white text-2xl">‹</button>
+            <div className="aspect-[4/5] bg-black rounded">
+              <img src={images[lightboxIndex].src} alt={images[lightboxIndex].alt} className="w-full h-full object-contain" />
+            </div>
+            <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 text-white text-2xl">›</button>
+            <div className="mt-3 text-center text-white">{images[lightboxIndex].alt}</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// --- Default sample images (Unsplash) ---
+const defaultImages = [
+  { src: "https://images.unsplash.com/photo-1504198453319-5ce911bafcde?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=1", alt: "Portrait — soft light" },
+  { src: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2", alt: "Environmental portrait" },
+  { src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3", alt: "Wedding moment" },
+  { src: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=4", alt: "Studio portrait" },
+  { src: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=5", alt: "Street photography" },
+  { src: "https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=6", alt: "Commercial fashion" },
+  { src: "https://images.unsplash.com/photo-1472417583565-62e7bdeda490?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=7", alt: "Couple portrait" },
+  { src: "https://images.unsplash.com/photo-1463453091185-61582044d556?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=8", alt: "Lifestyle" },
+];
